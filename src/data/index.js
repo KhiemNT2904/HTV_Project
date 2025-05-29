@@ -505,7 +505,7 @@ export const SEARCHCARDS = [
 	{
 		bgcolor: 'rgb(160, 195, 210)',
 		imgurl: 'https://t.scdn.co/images/68433b0ee5b5465b8e926c42b84cbcdb.jpeg',
-		title: 'Senin için Hazırlandı',
+		title: 'hoai tri',
 	},
 	{
 		bgcolor: 'rgb(75, 145, 125)',
