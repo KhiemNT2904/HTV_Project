@@ -1,0 +1,293 @@
+/* Spotify-Inspired Artist Page Styles */
+.pageContainer {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #121212 0%, #191414 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  font-family: 'Circular', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Subtle Custom Scrollbar */
+.pageContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pageContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pageContainer::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.pageContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Artist Header */
+.artistHeader {
+  padding: 2.5rem 2rem 2rem;
+  background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(18,18,18,0.9) 100%);
+  position: relative;
+  overflow: visible;
+  margin-bottom: 1rem;
+}
+
+.artistHeader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(30, 215, 96, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  pointer-events: none;
+}
+
+.artistInfo {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Artist Image */
+.artistImageContainer {
+  width: 180px;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  background: #000;
+}
+
+.artistImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Artist Details */
+.artistDetails {
+  flex: 1;
+  padding-bottom: 0.5rem;
+}
+
+.artistDetails::before {
+  content: 'Nghệ sĩ';
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #b3b3b3;
+  margin-bottom: 0.75rem;
+}
+
+.artistName {
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin: 0;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.songCount {
+  font-size: 0.875rem;
+  color: #b3b3b3;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Content Container */
+.contentContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+  flex: 1;
+  position: relative;
+}
+
+/* Section Title */
+.sectionTitle {
+  margin-bottom: 1.5rem;
+  padding: 0;
+  background: none;
+}
+
+.sectionTitle h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.04em;
+}
+
+/* Song List */
+.songList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+  position: relative;
+}
+
+/* State Messages */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #b3b3b3;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.error {
+  text-align: center;
+  padding: 3rem;
+  color: #e22134;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.noSongs {
+  text-align: center;
+  padding: 3rem;
+  color: #b3b3b3;
+  font-size: 1rem;
+  font-weight: 400;
+  grid-column: 1 / -1;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .artistName {
+    font-size: 3rem;
+  }
+  
+  .songList {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .artistHeader {
+    padding: 2rem 1.5rem;
+  }
+
+  .artistInfo {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .artistImageContainer {
+    width: 160px;
+    height: 160px;
+  }
+
+  .artistName {
+    font-size: 2.5rem;
+  }
+
+  .contentContainer {
+    padding: 0 1.5rem 3rem;
+  }
+
+  .sectionTitle h2 {
+    font-size: 1.5rem;
+  }
+
+  .songList {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .artistHeader {
+    padding: 1.5rem 1rem;
+  }
+
+  .artistImageContainer {
+    width: 140px;
+    height: 140px;
+  }
+
+  .artistName {
+    font-size: 2rem;
+  }
+
+  .songList {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .contentContainer {
+    padding: 0 1rem 2rem;
+  }
+}
+
+/* Hover Effects */
+@media (hover: hover) {
+  .artistImageContainer:hover {
+    transform: scale(1.02);
+  }
+}
+
+/* Focus States */
+.artistImageContainer:focus-within {
+  outline: 2px solid #1db954;
+  outline-offset: 2px;
+}
+
+/* Smooth Transitions */
+* {
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Typography Improvements */
+.artistName, .sectionTitle h2 {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .pageContainer {
+    background: #000000;
+  }
+  
+  .artistName {
+    color: #ffffff;
+  }
+  
+  .songCount {
+    color: #cccccc;
+  }
+}

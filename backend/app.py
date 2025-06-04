@@ -259,8 +259,58 @@ def get_songs_in_cluster(song_id):
         
     return jsonify(enriched_artists), 200
 
+@app.route('/artist/<artist_name>/songs', methods=['GET'])
+def get_artist_songs(artist_name):
+    try:
+        print(f"🎵 Đang tìm bài hát của nghệ sĩ: {artist_name}")
+        
+        # Kết nối database
+        db = Database()
+        conn = db.get_db()
+        cursor = conn.cursor()
+        
+        # Query để lấy bài hát của nghệ sĩ
+        query = """
+            SELECT s.id, s.name, s.year, s.popularity, a.name as artist_name
+            FROM songs s
+            JOIN song_artists sa ON s.id = sa.song_id
+            JOIN artists a ON sa.artist_id = a.id
+            WHERE a.name = ?
+            ORDER BY s.popularity DESC
+            LIMIT 20
+        """
+        
+        cursor.execute(query, (artist_name,))
+        songs_data = cursor.fetchall()
+        
+        # Chuyển đổi kết quả thành list các bài hát
+        songs = []
+        for song in songs_data:
+            try:
+                image_url = get_track_image(song[1], artist_name)
+                songs.append({
+                    'id': song[0],
+                    'name': song[1],
+                    'artist': song[4],
+                    'year': song[2],
+                    'popularity': song[3],
+                    'image_url': image_url
+                })
+            except Exception as e:
+                print(f"⚠️ Lỗi khi xử lý bài hát {song[1]}: {e}")
+                continue
+        
+        print(f"🎵 Tìm thấy {len(songs)} bài hát của nghệ sĩ {artist_name}")
+        return jsonify(songs), 200
+        
+    except Exception as e:
+        print(f"❌ Lỗi khi lấy bài hát của nghệ sĩ: {e}")
+        return jsonify({"error": f"Không thể lấy danh sách bài hát: {str(e)}"}), 500
+    finally:
+        db.close_db()
 
-
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 

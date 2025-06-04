@@ -10,6 +10,7 @@ import Footer from './component/footer/footer';
 import Home from './pages/home';
 import Search from './pages/search';
 import Library from './pages/library';
+import Artist from './pages/artist';
 import PlaylistPage from './pages/playlist';
 
 import CONST from './constants/index';
@@ -38,6 +39,9 @@ function App() {
             </Route>
             <Route exact path="/playlist/:path">
                 <PlaylistPage />
+            </Route>
+            <Route path="/artist/:artistId">
+                <Artist />
             </Route>
           </Switch>
           <Footer />

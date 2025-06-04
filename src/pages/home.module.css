@@ -72,3 +72,47 @@
         padding-bottom: 100px;
     }
 }
+.artistsSection {
+    margin-top: 2rem;
+    padding: 1rem;
+}
+
+.artistsSection h2 {
+    color: #FFFFFF;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.artistsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.artistCard {
+    background: #282828;
+    padding: 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.artistCard:hover {
+    background: #383838;
+    transform: translateY(-4px);
+}
+
+.artistCard h3 {
+    color: #FFFFFF;
+    font-size: 1.1rem;
+    margin: 0;
+    text-align: center;
+}
+
+.artistImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}

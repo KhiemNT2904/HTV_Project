@@ -5,7 +5,7 @@ import PlaylistCardS from '../component/cards/playlist-card-s';
 import PlaylistCardM from '../component/cards/playlist-card-m';
 import PlaylistCardT from '../component/cards/playlist-card-t';
 import { useAuth } from '../component/topnav/AuthContext';
-
+import { useHistory } from 'react-router-dom';
 
 import styles from "./home.module.css";
 
@@ -16,6 +16,7 @@ function Home({ setIsPopupOpen, isPopupOpen }){
 
     const { user, token, isAuthLoading  } = useAuth();
     const isLoggedIn = !!user;
+    const history = useHistory();
 
     const [songs, setSongs] = useState([]);
 
@@ -24,10 +25,24 @@ function Home({ setIsPopupOpen, isPopupOpen }){
     const [recommendSongs, setRecommendSongs] = useState([]);
     
     useEffect(() => {
+        let isMounted = true;
+        
         fetch('http://localhost:5000/recommend_songs/guest') 
             .then(response => response.json())
-            .then(data => setSongs(data))
-            .catch(error => console.error('Lỗi khi fetch songs:', error));
+            .then(data => {
+                if (isMounted) {
+                    setSongs(data);
+                }
+            })
+            .catch(error => {
+                if (isMounted) {
+                    console.error('Lỗi khi fetch songs:', error);
+                }
+            });
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     // nguoi dung
@@ -36,43 +51,69 @@ function Home({ setIsPopupOpen, isPopupOpen }){
     const [artistsGuest, setArtistsGuest] = useState([]);
 
     useEffect(() => {
+        let isMounted = true;
+
         if (!isAuthLoading && isLoggedIn && token) {
             fetch('http://localhost:5000/get_artist_preferences', {
             headers: { 'Authorization': `Bearer ${token}` }
             })
             .then(res => res.json())
             .then(data => {
-                console.log('🎧 Nghệ sĩ từ người dùng:', data);
-                if (Array.isArray(data)) {
-                setArtistsUser(data);
-                } else if (Array.isArray(data.artists)) {
-                setArtistsUser(data.artists);
-                } else {
-                setArtistsUser([]);
+                if (isMounted) {
+                    console.log('🎧 Nghệ sĩ từ người dùng:', data);
+                    if (Array.isArray(data)) {
+                    setArtistsUser(data);
+                    } else if (Array.isArray(data.artists)) {
+                    setArtistsUser(data.artists);
+                    } else {
+                    setArtistsUser([]);
+                    }
                 }
             })
-            .catch(() => setArtistsUser([]));
+            .catch(() => {
+                if (isMounted) {
+                    setArtistsUser([]);
+                }
+            });
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [isLoggedIn, token, isAuthLoading]);
 
     useEffect(() => {
+        let isMounted = true;
+
         if (!isAuthLoading && !isLoggedIn) {
             fetch('http://localhost:5000/recommend_artists/guest')
             .then(res => res.json())
             .then(data => {
-                console.log('👤 Nghệ sĩ cho khách:', data);
-                if (Array.isArray(data)) {
-                setArtistsGuest(data);
-                } else {
-                setArtistsGuest([]);
+                if (isMounted) {
+                    console.log('👤 Nghệ sĩ cho khách:', data);
+                    if (Array.isArray(data)) {
+                    setArtistsGuest(data);
+                    } else {
+                    setArtistsGuest([]);
+                    }
                 }
             })
-            .catch(() => setArtistsGuest([]));
+            .catch(() => {
+                if (isMounted) {
+                    setArtistsGuest([]);
+                }
+            });
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [isLoggedIn, isAuthLoading]);
 
     // lich su nge gan day
     useEffect(() => {
+        let isMounted = true;
+
         if (!isAuthLoading && isLoggedIn && token) {
             fetch('http://localhost:5000/get_song_history', {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -84,15 +125,26 @@ function Home({ setIsPopupOpen, isPopupOpen }){
                 return res.json();  // <-- chỉ thực thi nếu response hợp lệ
             })
             .then(data => {
-                console.log('🎵 Lịch sử bài hát trả về:', JSON.stringify(data, null, 2));
-                setSongHistory(data);
+                if (isMounted) {
+                    console.log('🎵 Lịch sử bài hát trả về:', JSON.stringify(data, null, 2));
+                    setSongHistory(data);
+                }
             })
             .catch(err => {
-                console.error('Lỗi khi fetch lịch sử nghe:', err);
+                if (isMounted) {
+                    console.error('Lỗi khi fetch lịch sử nghe:', err);
+                }
             });
         }
+
+        return () => {
+            isMounted = false;
+        };
     }, [isLoggedIn, token, isAuthLoading]);
 
+    const handleArtistClick = (artistName) => {
+        history.push(`/artist/${encodeURIComponent(artistName)}`);
+    };
 
     return (
         <div className={styles.Home}>
@@ -130,7 +182,7 @@ function Home({ setIsPopupOpen, isPopupOpen }){
                         <TitleM>{isLoggedIn ? 'Nghệ sĩ bạn yêu thích' : 'Nghệ sĩ nổi bật'}</TitleM> 
                     </div>
 
-                    <div className={styles.SectionCardsMedium}>
+                    <div className={styles.artistsGrid}>
                         {(() => {
                             const displayArtists = isLoggedIn ? artistsUser : artistsGuest;
                             const noDataMessage = isLoggedIn
@@ -141,17 +193,21 @@ function Home({ setIsPopupOpen, isPopupOpen }){
                                 return <p style={{ color: '#aaa' }}>{noDataMessage}</p>;
                             }
 
-                            return displayArtists.map(item => (
-                                <PlaylistCardS 
-                                    key={item.id}
-                                    data={{ 
-                                        title: item.name,
-                                        artist: item.artist,
-                                        imgUrl: item.image_url || '/default.jpg',
-                                        link: `song-${item.id}`,
-                                        hoverColor: '#444'
-                                    }}
-                                />
+                            return displayArtists.map((artist, index) => (
+                                <div 
+                                    key={index} 
+                                    className={styles.artistCard}
+                                    onClick={() => handleArtistClick(artist.name)}
+                                >
+                                    {artist.image_url && (
+                                        <img 
+                                            src={artist.image_url} 
+                                            alt={artist.name} 
+                                            className={styles.artistImage}
+                                        />
+                                    )}
+                                    <h3>{artist.name}</h3>
+                                </div>
                             ));
                         })()}
                     </div>
@@ -208,8 +264,6 @@ function Home({ setIsPopupOpen, isPopupOpen }){
                         </div>
                     </section>
                 )}
-
-
             </div>
         </div>
     );
