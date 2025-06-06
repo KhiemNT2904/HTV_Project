@@ -65,12 +65,13 @@ def init_db(db_path='music_recommendation.sqlite'):
 
     cursor.execute(''' 
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            last_login TIMESTAMP           
-        )
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role TEXT DEFAULT 'user', -- Thêm trường role với giá trị mặc định là 'user'
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login TIMESTAMP           
+    )
     ''')
 
     cursor.execute(''' 
@@ -130,10 +131,7 @@ def init_db(db_path='music_recommendation.sqlite'):
             FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE SET NULL
         )
     ''')
-
-    conn.commit()
-    conn.close()
-    print(f"Database initialized at {db_path}")
+    
 
 if __name__ == "__main__":
     init_db()
